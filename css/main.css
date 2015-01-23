@@ -1,0 +1,14 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+html, body, #map {
+    height: 100%;
+    width: 100%;
+}
+
+.leaflet-container {
+    background-color: #4576b2;
+    cursor: crosshair;
+}
