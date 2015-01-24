@@ -6,89 +6,159 @@
 
 'use strict';
 
-var options = {
-    minZoom: 2,
-    maxZoom: 5,
-    mapCenter: L.latLng(50, 10) // generally a bad idea: a germany-based worldview
+L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
+
+var Icons = {
+    guess: L.AwesomeMarkers.icon({
+        icon: 'question-circle',
+        markerColor: 'orange'
+    }),
+    city: L.AwesomeMarkers.icon({
+        icon: 'check',
+        markerColor: 'green'
+    })
 };
 
-var countries;
-var cities;
-var map;
-var city;
+var Quizzity = function() {
+    this.cities = []; // cities to guess
 
-var newTarget = function() {
-    city = _.sample(cities);
-    city.position = L.latLng(city.lat, city.lng);
-    city.country = countries[city.country].name;
-    alertify.log(decodeURIComponent(city.name) + ", " + decodeURIComponent(city.country));
-};
-
-var userClick = function(e) {
-    if (city === undefined) {
-        return;
-    }
-    console.log(e.latlng);
-
-    var guess = e.latlng;
-    var dist = Math.round(guess.distanceTo(city.position) / 1000);
-
-    var method = dist < 500 ? alertify.success : alertify.error;
-    method(dist.toString() + "km");
-
-    // L.marker(guess).addTo(map);
-    L.marker(city.position).addTo(map);
-
-    // TODO
-    // we could use geodesics here:
-    // https://github.com/henrythasler/Leaflet.Geodesic
-    L.polyline([guess, city.position], {
-        color: 'black',
-        weight: 3,
-        opacity: 0.6,
-        clickable: false
-    }).addTo(map);
-
-    // Pan to the central point of the line between the user guess
-    // and the city's actual position.
-    // var center = L.latLngBounds([city.position, guess]).getCenter();
-    // map.fitWorld({animation: true});
-    map.setView(options.mapCenter, options.minZoom, {
-        animation: true,
-        pan: { duration: 2 }
-    });
-
-    newTarget();
-
-    return true;
-};
-
-$(document).ready(function() {
-    // Load JSON data (countries and cities)
-    $.getJSON("geodata/countries.json", function(cs) {
-        countries = cs;
-    });
-
-    $.getJSON("geodata/cities.json", function(cs) {
-        cities = cs;
-        newTarget();
-    });
-
-    // Prepare the map
-    map = L.map('map', {
+    // Set up the map and tiles
+    this.map = L.map('map', {
         doubleClickZoom: false
     });
 
     L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
         id: 'sharkdp.e01ecf2e',
-        maxZoom: options.maxZoom,
-        minZoom: options.minZoom,
+        maxZoom: Quizzity.maxZoom,
+        minZoom: Quizzity.minZoom,
         noWrap: true
-    }).addTo(map);
+    }).addTo(this.map);
 
-    map.fitWorld();
-    map.panTo(options.mapCenter);
+    // Initial view
+    this.map.fitWorld();
+    this.map.panTo(Quizzity.mapCenter);
 
-    map.on('click', userClick);
+    // Register events
+    this.map.on('click', _.bind(this.userClick, this));
 
+    // Top panel
+    this.panel = document.getElementById("panel");
+};
+
+Quizzity.minZoom = 2;
+Quizzity.maxZoom = 5;
+Quizzity.mapCenter = L.latLng(50, 10); // usually a bad idea: a german-based worldview
+
+Quizzity.citiesPerGame = 5;
+
+Quizzity.prototype.currentCity = function() {
+    return this.cities[this.pointer];
+};
+
+Quizzity.prototype.showCity = function() {
+    // Show name of the city in the panel
+    this.panel.innerHTML = this.currentCity().fullName;
+};
+
+Quizzity.prototype.newGame = function() {
+    // Select random cities and add information
+    this.cities = _(this.dbCities)
+        .sample(Quizzity.citiesPerGame)
+        .map(function(city) {
+            // Replace country code by country name
+            city.country = this.dbCountries[city.country].name;
+
+            city.fullName = decodeURIComponent(city.name) + ", " +
+                            decodeURIComponent(city.country);
+
+            city.position = L.latLng(city.lat, city.lng);
+            return city;
+        }, this)
+        .value();
+
+    this.pointer = 0;
+
+    this.showCity();
+};
+
+Quizzity.prototype.gameActive = function() {
+    return !_.isEmpty(this.cities) && this.pointer < Quizzity.citiesPerGame;
+};
+
+Quizzity.prototype.userClick = function(e) {
+    if (!this.gameActive()) {
+        return;
+    }
+
+    var city = this.currentCity();
+    var guess = e.latlng;
+
+    // Distance in kilometers
+    var dist = Math.round(guess.distanceTo(city.position) / 1000);
+
+    var method = dist < 500 ? alertify.success : alertify.error;
+    method(dist.toString() + "km");
+
+    if (!_.isUndefined(this.markers)) {
+        _.each(this.markers, function(m) {
+            this.map.removeLayer(m);
+        }, this);
+    }
+
+    this.markers = [
+        L.marker(city.position, {
+            icon: Icons.city,
+            clickable: false,
+            keyboard: false,
+            title: city.fullName
+        }).addTo(this.map),
+
+        L.marker(guess, {
+            icon: Icons.guess,
+            clickable: false,
+            keyboard: false
+        }).addTo(this.map)
+    ];
+
+    // TODO
+    // we could use geodesics here:
+    // https://github.com/henrythasler/Leaflet.Geodesic
+    // L.polyline([guess, city.position], {
+    //     color: 'black',
+    //     weight: 3,
+    //     opacity: 0.6,
+    //     clickable: false
+    // }).addTo(this.map);
+
+    // Reset map view
+    this.map.setView(Quizzity.mapCenter, Quizzity.minZoom, {
+        animation: true,
+    });
+
+    this.pointer += 1;
+    if (this.gameActive()) {
+        this.showCity();
+    }
+    else {
+        console.log("Points: ...");
+        this.newGame();
+    }
+
+    return true;
+};
+
+
+$(document).ready(function() {
+    var quizzity = new Quizzity();
+
+    // Load JSON data (countries and cities)
+    $.getJSON("geodata/countries.json").success(function(countries) {
+        quizzity.dbCountries = countries;
+
+        $.getJSON("geodata/cities.json", function(cities) {
+            quizzity.dbCities = cities;
+
+            quizzity.newGame();
+        });
+    });
 });
