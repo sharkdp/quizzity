@@ -51,7 +51,7 @@ Quizzity.minZoom = 2;
 Quizzity.maxZoom = 5;
 Quizzity.mapCenter = L.latLng(50, 10); // usually a bad idea: a german-based worldview
 
-Quizzity.citiesPerGame = 3;
+Quizzity.citiesPerGame = 6;
 
 Quizzity.prototype.currentCity = function() {
     return this.cities[this.pointer];
@@ -105,7 +105,7 @@ Quizzity.prototype.showPoints = function() {
         return sum + city.points;
     }, 0);
 
-    // Average, best and worst distance:
+    // Average and best distance:
     var avgdist = Math.round(_.reduce(this.cities, function(sum, city) {
         return sum + city.distance;
     }, 0) / Quizzity.citiesPerGame);
@@ -113,14 +113,34 @@ Quizzity.prototype.showPoints = function() {
     var sorted = _.sortBy(this.cities, 'distance');
     var bestcity = _.first(sorted);
 
+    // Highscore?
+    var highscore = localStorage.getItem("highscore");
+    if (_.isString(highscore)) {
+        highscore = parseInt(highscore, 10);
+    }
+    if (!_.isNumber(highscore)) {
+        highscore = 0;
+    }
+
     var text = '<ul class="fa-ul">';
+    if (score > highscore) {
+        var strprevious = '';
+        if (highscore > 0) {
+            strprevious = ' (was: ' + highscore.toString() + ')';
+        }
+        text += '<li><i class="fa-li fa fa-trophy"></i>New personal highscore!' + strprevious + '</li>';
+    } else if (highscore > 0) {
+        text += '<li><i class="fa-li fa fa-trophy"></i>Personal highscore: ' + highscore.toString() + '</li>';
+    }
     text += '<li><i class="fa-li fa fa-area-chart"></i>Average distance: ' + avgdist.toString() + 'km</li>';
-    text += '<li><i class="fa-li fa fa-thumbs-o-up"></i>Best guess:<br>' + bestcity.distance.toString() + 'km (' + bestcity.fullName + ')</li>';
+    text += '<li><i class="fa-li fa fa-thumbs-o-up"></i>Best guess: ' + bestcity.distance.toString() + 'km<br>(' + bestcity.fullName + ')</li>';
     text += '</ul>';
 
-    // TODO: highscore?
+    if (score > highscore) {
+        localStorage.setItem("highscore", score);
+    }
 
-    $("#dialogTitle").html(score.toString() + " points!");
+    $("#dialogTitle").html(score.toString() + " points");
     $("#dialogContent").html(text);
     $("#dialogLabel").html("Try again!");
 
