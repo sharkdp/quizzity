@@ -49,7 +49,7 @@ if __name__ == '__main__':
     for city in citiesRaw:
         citizens = int(city['citizens'])
 
-        if citizens >= 100000:
+        if citizens >= 500000:
             lat = float(city['lat'])
             lng = float(city['lng'])
 
