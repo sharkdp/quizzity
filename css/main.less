@@ -1,0 +1,108 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700);
+
+@water: #4576b2;
+
+@panelWidth: 500px;
+@dialogWidth: 500px;
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+html, body, #map {
+    height: 100%;
+    width: 100%;
+}
+
+.leaflet-container {
+    background-color: @water;
+    cursor: crosshair;
+}
+
+.box (@width, @top, @shadowRadius, @shadowAlpha) {
+    position: absolute;
+    top: @top;
+
+    /* center on screen */
+    left: 50%;
+    width: @width;
+    margin-left: -(0.5 * @width);
+
+    color: black;
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    box-shadow: 0px 2px @shadowRadius rgba(0, 0, 0, @shadowAlpha);
+
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 400;
+    font-size: 28px;
+
+    pointer-events: none;
+}
+
+#panel {
+    .box(@panelWidth, 10px, 5px, 0.3);
+    background-color: #fff;
+    text-align: center;
+    padding: 2px;
+    display: none;
+}
+
+#dialog {
+    .box(@dialogWidth, 300px, 20px, 0.9);
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+}
+
+#dialog h1 {
+    font-weight: 700;
+    font-size: 40px;
+    text-align: center;
+}
+
+.zz {
+    color: @water;
+}
+
+#dialog li {
+    margin-bottom: 10px;
+}
+
+#dialog p {
+    padding: 0;
+    margin: 0;
+}
+
+#dialog button {
+    margin-top: 10px;
+
+    font-size: 24px;
+    font-weight: 700;
+
+    background-color: #444;
+    color: white;
+
+    padding: 7px;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    border-radius: 3px;
+    border-width: 0;
+    border-bottom: 2px solid #333;
+
+    pointer-events: auto;
+}
+
+#dialog button:hover,
+#dialog button:focus {
+    background-color: #666;
+    cursor: pointer;
+}
+
+#dialog button:active {
+    // background-color: #444;
+    border-bottom: none;
+    border-top: 2px solid #333;
+}

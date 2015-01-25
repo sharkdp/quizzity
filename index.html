@@ -9,18 +9,29 @@
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css">
         <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
-        <link rel="stylesheet" href="bower_components/sweetalert/lib/sweet-alert.css">
         <link rel="stylesheet" href="css/main.css">
     </head>
     <body>
         <div id="map"></div>
-        <div id="panel"><i>Loading game...</i></div>
+        <div id="panel"><i class="fa fa-spinner fa-pulse"></i> <i>Loading game...</i></div>
+        <div id="dialog">
+            <h1 id="dialogTitle">qui<span class="zz">zz</span>ity</h1>
+            <div id="dialogContent">
+                <ul class="fa-ul">
+                    <li><i class="fa-li fa fa-location-arrow"></i>Guess the location of 10 cities.</li>
+                    <li><i class="fa-li fa fa-search-plus"></i>Zoom in to be more accurate.</li>
+                    <li><i class="fa-li fa fa-trophy"></i>Receive bonus points for being fast.</li>
+                </ul>
+            </div>
+            <p align="center">
+                <button type="button" id="start"><i class="fa fa-hand-o-right"></i> <span id="dialogLabel">Start game!</span></button>
+            </p>
+        </div>
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
         <script src="bower_components/lodash/lodash.min.js"></script>
         <script src="bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js"></script>
-        <script src="bower_components/sweetalert/lib/sweet-alert.min.js"></script>
         <script src="js/main.js"></script>
     </body>
 </html>
