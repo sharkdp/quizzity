@@ -2,7 +2,7 @@
 /*global $*/
 /*global _*/
 /*global L*/
-/*global alertify*/
+/*global swal*/
 
 'use strict';
 
@@ -42,7 +42,7 @@ var Quizzity = function() {
     this.map.on('click', _.bind(this.userClick, this));
 
     // Top panel
-    this.panel = document.getElementById("panel");
+    this.panel = $("#panel");
 };
 
 Quizzity.minZoom = 2;
@@ -56,8 +56,7 @@ Quizzity.prototype.currentCity = function() {
 };
 
 Quizzity.prototype.showCity = function() {
-    // Show name of the city in the panel
-    this.panel.innerHTML = this.currentCity().fullName;
+    this.panel.html(this.currentCity().fullName);
 };
 
 Quizzity.prototype.newGame = function() {
@@ -81,8 +80,30 @@ Quizzity.prototype.newGame = function() {
     this.showCity();
 };
 
+Quizzity.prototype.showPoints = function() {
+    this.removeMarkers();
+
+    // Calculate points
+    // _.pluck(this.cities, 'points').
+
+    swal({
+        title: "10123 points!",
+        type: "success",
+        confirmButtonText: "Try again!",
+        confirmButtonColor: '#8bc963'
+    }, _.bind(this.newGame, this));
+};
+
 Quizzity.prototype.gameActive = function() {
     return !_.isEmpty(this.cities) && this.pointer < Quizzity.citiesPerGame;
+};
+
+Quizzity.prototype.removeMarkers = function() {
+    if (!_.isUndefined(this.markers)) {
+        _.each(this.markers, function(m) {
+            this.map.removeLayer(m);
+        }, this);
+    }
 };
 
 Quizzity.prototype.userClick = function(e) {
@@ -96,15 +117,10 @@ Quizzity.prototype.userClick = function(e) {
     // Distance in kilometers
     var dist = Math.round(guess.distanceTo(city.position) / 1000);
 
-    var method = dist < 500 ? alertify.success : alertify.error;
-    method(dist.toString() + "km");
+    // var method = dist < 500 ? alertify.success : alertify.error;
+    // method(dist.toString() + "km");
 
-    if (!_.isUndefined(this.markers)) {
-        _.each(this.markers, function(m) {
-            this.map.removeLayer(m);
-        }, this);
-    }
-
+    this.removeMarkers();
     this.markers = [
         L.marker(city.position, {
             icon: Icons.city,
@@ -140,8 +156,7 @@ Quizzity.prototype.userClick = function(e) {
         this.showCity();
     }
     else {
-        console.log("Points: ...");
-        this.newGame();
+        this.showPoints();
     }
 
     return true;

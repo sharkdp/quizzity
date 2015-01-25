@@ -1,0 +1,22 @@
+{
+  "name": "quizzity",
+  "version": "0.1",
+  "homepage": "https://github.com/sharkdp/quizzity",
+  "authors": [
+    "David Peter <davidpeter@web.de>"
+  ],
+  "description": "A worldmap quiz game built with Leaflet",
+  "main": "js/main.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "tests"
+  ],
+  "dependencies": {
+    "sweetalert": "~0.4.1",
+    "lodash": "~3.0.0",
+    "Leaflet.awesome-markers": "~2.0.2",
+    "font-awesome": "~4.3.0"
+  }
+}
