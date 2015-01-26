@@ -23,13 +23,15 @@ if __name__ == '__main__':
     countriesRaw = parseCSV("countryInfo.txt", {
         'code': 0,
         'name': 4,
-        'capital': 5
+        'capital': 5,
+        'region': 8
     })
 
     countries = {
         c['code']: {
             'name': c['name'],
-            'capital': c['capital']
+            'capital': c['capital'],
+            'region': c['region']
         } for c in countriesRaw
     }
 
@@ -45,21 +47,28 @@ if __name__ == '__main__':
         'citizens': 14
     })
 
-    cities = []
+    cities_world = []
+    cities_eu = []
     for city in citiesRaw:
         citizens = int(city['citizens'])
 
+        city = {
+            'name': city['name'],
+            'lat': float(city['lat']),
+            'lng': float(city['lng']),
+            'country': city['country']
+        }
+
+        region = countries[city['country']]['region']
+
         if citizens >= 500000:
-            lat = float(city['lat'])
-            lng = float(city['lng'])
+            cities_world.append(city)
 
-            cities.append({
-                'name': city['name'],
-                'lat': lat,
-                'lng': lng,
-                'citizens': citizens,
-                'country': city['country']
-            })
+        if citizens >= 200000 and region == 'EU' and city['country'] != 'RU':
+            cities_eu.append(city)
 
-    writeJSON("cities.json", cities)
-    print("Saved {} cities".format(len(cities)))
+    writeJSON("cities-world.json", cities_world)
+    print("cities-world: {}".format(len(cities_world)))
+
+    writeJSON("cities-eu.json", cities_eu)
+    print("cities-eu: {}".format(len(cities_eu)))

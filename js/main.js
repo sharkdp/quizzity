@@ -1,4 +1,4 @@
-/*jslint browser: true, nomen: true, white: true, vars: true, todo: true*/
+/*jslint browser: true, nomen: true, white: true, vars: true*/
 /*global $*/
 /*global _*/
 /*global L*/
@@ -21,18 +21,23 @@ var Icons = {
 var Quizzity = function() {
     this.cities = []; // cities to guess
     this.markers = []; // map elements
+};
 
+Quizzity.prototype.initializeInterface = function() {
     // Set up the map and tiles
     this.map = L.map('map', {
         doubleClickZoom: false
     });
 
-    this.layer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
-        id: 'sharkdp.e01ecf2e',
-        maxZoom: Quizzity.maxZoom,
-        minZoom: Quizzity.minZoom,
-        noWrap: true
-    }).addTo(this.map);
+    this.layer = L.tileLayer(
+        'https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png',
+        {
+            id: 'sharkdp.e01ecf2e',
+            maxZoom: Quizzity.maxZoom,
+            minZoom: Quizzity.minZoom,
+            noWrap: true
+        }
+    ).addTo(this.map);
 
     // Initial view
     this.map.fitWorld();
@@ -40,17 +45,17 @@ var Quizzity = function() {
 
     // Register events
     this.map.on('click', _.bind(this.userClick, this));
-    $("#start").click(_.bind(this.newGame, this));
+    $('#start').click(_.bind(this.newGame, this));
 
     // HTML elements
-    this.dialog = $("#dialog");
-    this.panel = $("#panel");
+    this.dialog = $('#dialog');
+    this.panel = $('#panel');
 };
 
-Quizzity.minZoom = 2;
 Quizzity.maxZoom = 5;
-Quizzity.mapCenter = L.latLng(50, 10); // usually a bad idea: a german-based worldview
-
+Quizzity.minZoom = 2;
+// usually a bad idea: a germany-based worldview:
+Quizzity.mapCenter = L.latLng(50, 10);
 Quizzity.citiesPerGame = 6;
 
 Quizzity.prototype.currentCity = function() {
@@ -68,14 +73,14 @@ Quizzity.prototype.newGame = function() {
     this.removeMarkers();
 
     // Select random cities and add information
-    this.cities = _(this.dbCities)
+    this.cities = _(Quizzity.dbCities)
         .sample(Quizzity.citiesPerGame)
         .map(function(city) {
             // Replace country code by country name
-            city.country = this.dbCountries[city.country].name;
+            city.countryName = Quizzity.dbCountries[city.country].name;
 
-            city.fullName = decodeURIComponent(city.name) + ", " +
-                            decodeURIComponent(city.country);
+            city.fullName = decodeURIComponent(city.name) + ', ' +
+                            decodeURIComponent(city.countryName);
 
             city.position = L.latLng(city.lat, city.lng);
             return city;
@@ -98,8 +103,6 @@ Quizzity.prototype.showPoints = function() {
         this.showMarkers(city, true);
     }, this);
 
-    // TODO: Allow user to zoom in, maybe show a different map with labels
-
     // Score
     var score = _.reduce(this.cities, function(sum, city) {
         return sum + city.points;
@@ -114,7 +117,7 @@ Quizzity.prototype.showPoints = function() {
     var bestcity = _.first(sorted);
 
     // Highscore?
-    var highscore = localStorage.getItem("highscore");
+    var highscore = localStorage.getItem('highscore');
     if (_.isString(highscore)) {
         highscore = parseInt(highscore, 10);
     }
@@ -137,12 +140,12 @@ Quizzity.prototype.showPoints = function() {
     text += '</ul>';
 
     if (score > highscore) {
-        localStorage.setItem("highscore", score);
+        localStorage.setItem('highscore', score);
     }
 
-    $("#dialogTitle").html(score.toString() + " points");
-    $("#dialogContent").html(text);
-    $("#dialogLabel").html("Try again!");
+    $('#dialogTitle').html(score.toString() + ' points');
+    $('#dialogContent').html(text);
+    $('#dialogLabel').html('Try again!');
 
     this.dialog.fadeIn();
 };
@@ -213,13 +216,13 @@ Quizzity.prototype.userClick = function(e) {
 
     var multiplier = 1;
     if (time < 1000) {
-        multiplier = 3;
+        multiplier = 1.4;
     } else if (time < 2000) {
-        multiplier = 2;
+        multiplier = 1.3;
     } else if (time < 3000) {
-        multiplier = 1.5;
-    } else if (time < 5000) {
         multiplier = 1.2;
+    } else if (time < 5000) {
+        multiplier = 1.1;
     }
 
     points *= multiplier;
@@ -232,7 +235,7 @@ Quizzity.prototype.userClick = function(e) {
 
     // Reset map view
     this.map.setView(Quizzity.mapCenter, Quizzity.minZoom, {
-        animation: true,
+        animation: true
     });
 
     this.pointer += 1;
@@ -253,16 +256,17 @@ Quizzity.prototype.userClick = function(e) {
 
 
 $(document).ready(function() {
-    var quizzity = new Quizzity();
+    var game = new Quizzity();
+    game.initializeInterface();
 
     // Load JSON data (countries and cities)
-    $.getJSON("geodata/countries.json").success(function(countries) {
-        quizzity.dbCountries = countries;
+    $.getJSON('geodata/countries.json').success(function(countries) {
+        Quizzity.dbCountries = countries;
 
-        $.getJSON("geodata/cities.json", function(cities) {
-            quizzity.dbCities = cities;
+        $.getJSON('geodata/cities-world.json', function(cities) {
+            Quizzity.dbCities = cities;
 
-            // TODO: feedback that json has loaded
+            $('#dialog').show();
         });
     });
 });

@@ -20,11 +20,10 @@ html, body, #map {
     cursor: crosshair;
 }
 
-.box (@width, @top, @shadowRadius, @shadowAlpha) {
+.box (@width, @shadowRadius, @shadowAlpha) {
     position: absolute;
-    top: @top;
 
-    /* center on screen */
+    /* center horizontally */
     left: 50%;
     width: @width;
     margin-left: -(0.5 * @width);
@@ -43,7 +42,9 @@ html, body, #map {
 }
 
 #panel {
-    .box(@panelWidth, 10px, 5px, 0.3);
+    .box(@panelWidth, 5px, 0.3);
+    top: 10px;
+
     background-color: #fff;
     text-align: center;
     padding: 2px;
@@ -51,9 +52,15 @@ html, body, #map {
 }
 
 #dialog {
-    .box(@dialogWidth, 300px, 20px, 0.9);
+    .box(@dialogWidth, 20px, 0.9);
+
+    top: 50%;
+    margin-top: -150px;
+
     background-color: rgba(255, 255, 255, 0.8);
     padding: 20px;
+
+    display: none;
 }
 
 #dialog h1 {
