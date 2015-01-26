@@ -6,7 +6,7 @@ quizzity is a geographical quiz built on top of a Leaflet map. You have to guess
 
 
 ### JavaScript libraries, geodata, maps, icons
-* GeoNames - http://www.geonames.org/
+* GeoNames - http://www.geonames.org
 * Leaflet - http://leafletjs.com
 * openstreetmap - http://openstreetmap.org
 * Mapbox - https://mapbox.com
