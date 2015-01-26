@@ -1,3 +1,4 @@
+from collections import defaultdict
 import csv
 import json
 
@@ -16,6 +17,7 @@ def parseCSV(source, fields):
 def writeJSON(target, data):
     with open(target, "w") as ft:
         ft.write(json.dumps(data))
+        print("{filename}: {num} datasets".format(filename=target, num=len(data)))
 
 
 if __name__ == '__main__':
@@ -36,7 +38,6 @@ if __name__ == '__main__':
     }
 
     writeJSON("countries.json", countries)
-    print("Saved {} countries".format(len(countries)))
 
     # Read cities
     citiesRaw = parseCSV("cities15000.txt", {
@@ -44,13 +45,18 @@ if __name__ == '__main__':
         'lat': 4,
         'lng': 5,
         'country': 8,
-        'citizens': 14
+        'citizens': 14,
+        'featureCode': 7
     })
 
-    cities_world = []
-    cities_eu = []
+    cities = defaultdict(list)
     for city in citiesRaw:
         citizens = int(city['citizens'])
+        fc = city['featureCode']
+
+        # we don't want parts of larger cities:
+        if fc == 'PPLX':
+            continue
 
         city = {
             'name': city['name'],
@@ -62,13 +68,13 @@ if __name__ == '__main__':
         region = countries[city['country']]['region']
 
         if citizens >= 500000:
-            cities_world.append(city)
+            cities['world'].append(city)
 
         if citizens >= 200000 and region == 'EU' and city['country'] != 'RU':
-            cities_eu.append(city)
+            cities['EU'].append(city)
 
-    writeJSON("cities-world.json", cities_world)
-    print("cities-world: {}".format(len(cities_world)))
+        if fc == 'PPLC':
+            cities['capitals'].append(city)
 
-    writeJSON("cities-eu.json", cities_eu)
-    print("cities-eu: {}".format(len(cities_eu)))
+    for key, data in cities.items():
+        writeJSON("cities-" + key + ".json", data)
