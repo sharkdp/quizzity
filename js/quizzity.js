@@ -5,19 +5,6 @@
 
 'use strict';
 
-L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
-
-var Icons = {
-    guess: L.AwesomeMarkers.icon({
-        icon: 'question-circle',
-        markerColor: 'orange'
-    }),
-    city: L.AwesomeMarkers.icon({
-        icon: 'check',
-        markerColor: 'green'
-    })
-};
-
 var Quizzity = function() {
     this.cities = []; // cities to guess
     this.markers = []; // map elements
@@ -26,7 +13,8 @@ var Quizzity = function() {
 Quizzity.prototype.initializeInterface = function() {
     // Set up the map and tiles
     this.map = L.map('map', {
-        doubleClickZoom: false
+        doubleClickZoom: false,
+        dragging: false
     });
 
     this.layer = L.tileLayer(
@@ -63,6 +51,9 @@ Quizzity.prototype.currentCity = function() {
 };
 
 Quizzity.prototype.showCity = function() {
+    // Reset map (again), in case the user scrolled while viewing the dialog
+    this.resetMapView();
+
     var prefix = '<i class="fa fa-location-arrow"></i> ';
     this.panel.html(prefix + this.currentCity().fullName);
 
@@ -165,7 +156,7 @@ Quizzity.prototype.removeMarkers = function() {
 Quizzity.prototype.showMarkers = function(city, drawLine) {
     this.markers.push(
         L.marker(city.position, {
-            icon: Icons.city,
+            icon: Quizzity.Icons.city,
             clickable: false,
             keyboard: false,
             title: city.fullName
@@ -174,7 +165,7 @@ Quizzity.prototype.showMarkers = function(city, drawLine) {
 
     this.markers.push(
         L.marker(city.guess, {
-            icon: Icons.guess,
+            icon: Quizzity.Icons.guess,
             clickable: false,
             keyboard: false
         }).addTo(this.map)
@@ -190,6 +181,12 @@ Quizzity.prototype.showMarkers = function(city, drawLine) {
             }).addTo(this.map)
         );
     }
+};
+
+Quizzity.prototype.resetMapView = function() {
+    this.map.setView(Quizzity.mapCenter, Quizzity.minZoom, {
+        animation: true
+    });
 };
 
 Quizzity.prototype.userClick = function(e) {
@@ -233,10 +230,7 @@ Quizzity.prototype.userClick = function(e) {
     city.points = points;
     city.time = time;
 
-    // Reset map view
-    this.map.setView(Quizzity.mapCenter, Quizzity.minZoom, {
-        animation: true
-    });
+    this.resetMapView();
 
     this.pointer += 1;
     if (this.gameActive()) {
@@ -252,6 +246,20 @@ Quizzity.prototype.userClick = function(e) {
     }
 
     return true;
+};
+
+// font-awesome
+L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
+
+Quizzity.Icons = {
+    guess: L.AwesomeMarkers.icon({
+        icon: 'question-circle',
+        markerColor: 'orange'
+    }),
+    city: L.AwesomeMarkers.icon({
+        icon: 'check',
+        markerColor: 'green'
+    })
 };
 
 
