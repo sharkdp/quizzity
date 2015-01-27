@@ -13,4 +13,4 @@ if [[ ! -e "countryInfo.txt" ]]; then
     sed -i -e '/^#.*$/d' countryInfo.txt
 fi
 
-python3 convert.py
+python3 createJSON.py

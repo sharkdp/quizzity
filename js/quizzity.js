@@ -69,7 +69,7 @@ Quizzity.prototype.newGame = function() {
         .sample(Quizzity.citiesPerGame)
         .map(function(city) {
             // Replace country code by country name
-            city.countryName = Quizzity.dbCountries[city.country].name;
+            city.countryName = Quizzity.dbCountries[city.country];
 
             city.fullName = decodeURIComponent(city.name) + ', ' +
                             decodeURIComponent(city.countryName);
