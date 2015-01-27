@@ -1,4 +1,4 @@
-/*jslint browser: true, nomen: true, white: true, vars: true*/
+/*jslint browser: true, nomen: true, white: true*/
 /*global $*/
 /*global _*/
 /*global L*/
@@ -13,8 +13,7 @@ var Quizzity = function() {
 Quizzity.prototype.initializeInterface = function() {
     // Set up the map and tiles
     this.map = L.map('map', {
-        doubleClickZoom: false,
-        dragging: false
+        doubleClickZoom: false
     });
 
     this.layer = L.tileLayer(
@@ -51,10 +50,12 @@ Quizzity.prototype.currentCity = function() {
 };
 
 Quizzity.prototype.showCity = function() {
+    var prefix;
+
     // Reset map (again), in case the user scrolled while viewing the dialog
     this.resetMapView();
 
-    var prefix = '<i class="fa fa-location-arrow"></i> ';
+    prefix = '<i class="fa fa-location-arrow"></i> ';
     this.panel.html(prefix + this.currentCity().fullName);
 
     this.startTime = new Date().getTime();
@@ -87,6 +88,8 @@ Quizzity.prototype.newGame = function() {
 };
 
 Quizzity.prototype.showPoints = function() {
+    var score, avgdist, sorted, bestcity, highscore, text, strprevious;
+
     this.panel.slideUp(200);
 
     // Show all markers
@@ -95,20 +98,20 @@ Quizzity.prototype.showPoints = function() {
     }, this);
 
     // Score
-    var score = _.reduce(this.cities, function(sum, city) {
+    score = _.reduce(this.cities, function(sum, city) {
         return sum + city.points;
     }, 0);
 
     // Average and best distance:
-    var avgdist = Math.round(_.reduce(this.cities, function(sum, city) {
+    avgdist = Math.round(_.reduce(this.cities, function(sum, city) {
         return sum + city.distance;
     }, 0) / Quizzity.citiesPerGame);
 
-    var sorted = _.sortBy(this.cities, 'distance');
-    var bestcity = _.first(sorted);
+    sorted = _.sortBy(this.cities, 'distance');
+    bestcity = _.first(sorted);
 
     // Highscore?
-    var highscore = localStorage.getItem('highscore');
+    highscore = localStorage.getItem('highscore');
     if (_.isString(highscore)) {
         highscore = parseInt(highscore, 10);
     }
@@ -116,9 +119,9 @@ Quizzity.prototype.showPoints = function() {
         highscore = 0;
     }
 
-    var text = '<ul class="fa-ul">';
+    text = '<ul class="fa-ul">';
     if (score > highscore) {
-        var strprevious = '';
+        strprevious = '';
         if (highscore > 0) {
             strprevious = ' (was: ' + highscore.toString() + ')';
         }
@@ -141,7 +144,7 @@ Quizzity.prototype.showPoints = function() {
     this.dialog.fadeIn();
 };
 
-Quizzity.prototype.gameActive = function() {
+Quizzity.prototype.isGameActive = function() {
     return !_.isEmpty(this.cities) && this.pointer < Quizzity.citiesPerGame;
 };
 
@@ -190,20 +193,22 @@ Quizzity.prototype.resetMapView = function() {
 };
 
 Quizzity.prototype.userClick = function(e) {
-    if (!this.gameActive()) {
+    var time, city, points, dist, multiplier;
+
+    if (!this.isGameActive()) {
         return;
     }
 
-    var time = (new Date().getTime()) - this.startTime;
+    time = (new Date().getTime()) - this.startTime;
 
-    var city = this.currentCity();
+    city = this.currentCity();
     city.guess = e.latlng;
 
     // Calculate points
-    var points = 0;
+    points = 0;
 
     // Distance in kilometers
-    var dist = Math.round(city.guess.distanceTo(city.position) / 1000);
+    dist = Math.round(city.guess.distanceTo(city.position) / 1000);
 
     if (dist < 15) { // Consider this exact
         points = 2000;
@@ -211,7 +216,7 @@ Quizzity.prototype.userClick = function(e) {
         points = 1500 - dist;
     }
 
-    var multiplier = 1;
+    multiplier = 1;
     if (time < 1000) {
         multiplier = 1.4;
     } else if (time < 2000) {
@@ -233,7 +238,7 @@ Quizzity.prototype.userClick = function(e) {
     this.resetMapView();
 
     this.pointer += 1;
-    if (this.gameActive()) {
+    if (this.isGameActive()) {
         // Show guess and solution on the map
         this.removeMarkers();
         this.showMarkers(city, false);
@@ -265,6 +270,7 @@ Quizzity.Icons = {
 
 $(document).ready(function() {
     var game = new Quizzity();
+
     game.initializeInterface();
 
     // Load JSON data (countries and cities)
