@@ -2,6 +2,7 @@
 /*global $*/
 /*global _*/
 /*global L*/
+/*global ga*/
 
 'use strict';
 
@@ -86,6 +87,8 @@ Quizzity.prototype.newGame = function() {
 
     this.$panel.show();
     this.$panel.startAnimation('flipInY');
+
+    ga('send', 'event', 'button', 'click', 'start-game');
 };
 
 Quizzity.prototype.showPoints = function() {
