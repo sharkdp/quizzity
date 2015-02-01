@@ -20,6 +20,10 @@ html, body, #map {
     cursor: crosshair;
 }
 
+.roboto {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
 .box (@width, @shadowRadius, @shadowAlpha) {
     position: absolute;
 
@@ -34,11 +38,12 @@ html, body, #map {
     border-radius: 5px;
     box-shadow: 0px 2px @shadowRadius rgba(0, 0, 0, @shadowAlpha);
 
-    font-family: 'Roboto Condensed', sans-serif;
-    font-weight: 400;
     font-size: 28px;
 
     pointer-events: none;
+
+    .roboto;
+    font-weight: 400;
 }
 
 #panel {
@@ -112,4 +117,18 @@ html, body, #map {
     // background-color: #444;
     border-bottom: none;
     border-top: 2px solid #333;
+}
+
+.points {
+    position: absolute;
+
+    .roboto;
+    font-weight: 700;
+    font-size: 60px;
+    color: #fff;
+
+    // text-shadow: 0px 0px 4px #000;
+    -webkit-text-stroke: 2px black;
+    // -webkit-animation-duration: 2s;
+    // -moz-animation-duration: 2s;
 }

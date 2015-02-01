@@ -35,8 +35,9 @@ Quizzity.prototype.initializeInterface = function() {
     $('#start').click(_.bind(this.newGame, this));
 
     // HTML elements
-    this.dialog = $('#dialog');
-    this.panel = $('#panel');
+    this.$dialog = $('#dialog');
+    this.$panel = $('#panel');
+    this.$points = $('#points');
 };
 
 Quizzity.maxZoom = 5;
@@ -56,7 +57,7 @@ Quizzity.prototype.showCity = function() {
     this.resetMapView();
 
     prefix = '<i class="fa fa-location-arrow"></i> ';
-    this.panel.html(prefix + this.currentCity().fullName);
+    this.$panel.html(prefix + this.currentCity().fullName);
 
     this.startTime = new Date().getTime();
 };
@@ -83,14 +84,14 @@ Quizzity.prototype.newGame = function() {
 
     this.showCity();
 
-    this.dialog.hide();
-    this.panel.slideDown(200);
+    this.$dialog.hide();
+    this.$panel.slideDown(200);
 };
 
 Quizzity.prototype.showPoints = function() {
     var score, avgdist, sorted, bestcity, highscore, text, strprevious;
 
-    this.panel.slideUp(200);
+    this.$panel.slideUp(200);
 
     // Show all markers
     _.each(this.cities, function(city) {
@@ -141,7 +142,7 @@ Quizzity.prototype.showPoints = function() {
     $('#dialogContent').html(text);
     $('#dialogLabel').html('Try again!');
 
-    this.dialog.fadeIn();
+    this.$dialog.fadeIn();
 };
 
 Quizzity.prototype.isGameActive = function() {
@@ -229,6 +230,11 @@ Quizzity.prototype.userClick = function(e) {
 
     points *= multiplier;
     points = Math.round(points);
+
+    // Show on screen
+    this.$points.html('<div class="points animated bounceOut" style="left: ' + e.containerPoint.x + 'px; top: ' + e.containerPoint.y + 'px">' + points.toString() + '</div>');
+
+    // TODO: remove element
 
     // Save for stats
     city.distance = dist;
