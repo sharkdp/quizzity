@@ -17,12 +17,13 @@ Quizzity.prototype.initializeInterface = function() {
     });
 
     this.layer = L.tileLayer(
-        'https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png',
+        'map/tiles/{z}/{x}/{y}.png',
         {
-            id: 'sharkdp.e01ecf2e',
+            // id: 'sharkdp.e01ecf2e',
             maxZoom: Quizzity.maxZoom,
             minZoom: Quizzity.minZoom,
-            noWrap: true
+            noWrap: true,
+            tms: true
         }
     ).addTo(this.map);
 
