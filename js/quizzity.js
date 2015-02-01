@@ -91,8 +91,8 @@ Quizzity.prototype.newGame = function() {
 Quizzity.prototype.showPoints = function() {
     var score, avgdist, sorted, bestcity, highscore, text, strprevious;
 
-    this.$points.hide();
-
+    // Remove panel and current points from screen
+    this.$points.delay(500).slideUp();
     this.$panel.slideUp(200);
 
     // Show all markers
@@ -234,10 +234,6 @@ Quizzity.prototype.userClick = function(e) {
     points *= multiplier;
     points = Math.round(points);
 
-    console.log(time);
-    console.log(multiplier);
-    console.log(points);
-
     // Show points on screen
     animationClass = 'animated bounceIn';
 
@@ -256,8 +252,6 @@ Quizzity.prototype.userClick = function(e) {
             .addClass(animationClass);
     }
 
-    this.resetMapView();
-
     // Save for stats
     city.distance = dist;
     city.points = points;
@@ -265,6 +259,8 @@ Quizzity.prototype.userClick = function(e) {
 
     this.pointer += 1;
     if (this.isGameActive()) {
+        this.resetMapView();
+
         // Show guess and solution on the map
         this.removeMarkers();
         this.showMarkers(city, false);
@@ -273,9 +269,11 @@ Quizzity.prototype.userClick = function(e) {
         this.showCity();
     } else {
         // Game over!
+        this.showPoints();
+
         _.delay(_.bind(function() {
-            this.showPoints();
-        }, this), 200);
+            this.resetMapView();
+        }, this), 500);
     }
 
     return true;
