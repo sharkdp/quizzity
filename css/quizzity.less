@@ -27,30 +27,30 @@ html, body, #map {
     font-family: 'Roboto Condensed', sans-serif;
 }
 
-.box (@width, @shadowRadius, @shadowAlpha) {
-    position: absolute;
-
-    /* center horizontally */
+.centerHor(@width) {
     left: 50%;
     width: @width;
     margin-left: -(0.5 * @width);
+}
 
+.box (@shadowRadius, @shadowAlpha) {
+    position: absolute;
+
+    .roboto;
+    font-weight: 400;
+    font-size: 28px;
     color: black;
 
     border-bottom: 1px solid rgba(0, 0, 0, 0.6);
     border-radius: 5px;
     box-shadow: 0px 2px @shadowRadius rgba(0, 0, 0, @shadowAlpha);
 
-    font-size: 28px;
-
     pointer-events: none;
-
-    .roboto;
-    font-weight: 400;
 }
 
 #panel {
-    .box(@panelWidth, 5px, 0.3);
+    .box(5px, 0.3);
+    .centerHor(@panelWidth);
     top: 10px;
 
     background-color: #fff;
@@ -59,13 +59,18 @@ html, body, #map {
     display: none;
 }
 
+.transparent {
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
 #dialog {
-    .box(@dialogWidth, 20px, 0.9);
+    .box(20px, 0.9);
+    .centerHor(@dialogWidth);
 
     top: 50%;
     margin-top: -150px;
 
-    background-color: rgba(255, 255, 255, 0.85);
+    .transparent;
     padding: 20px;
 
     display: none;
@@ -119,6 +124,26 @@ html, body, #map {
 #dialog button:active {
     border-bottom: none;
     border-top: 2px solid #333;
+}
+
+#github {
+    .box(3px, 0.9);
+    bottom: 10px;
+    left: 10px;
+
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    font-size: 20px;
+
+    .transparent;
+}
+
+#github a {
+    text-decoration: none;
+    color: black;
+    pointer-events: auto;
 }
 
 #points {
