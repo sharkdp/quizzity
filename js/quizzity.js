@@ -53,9 +53,6 @@ Quizzity.prototype.currentCity = function() {
 Quizzity.prototype.showCity = function() {
     var prefix;
 
-    // Reset map (again), in case the user scrolled while viewing the dialog
-    this.resetMapView();
-
     prefix = '<i class="fa fa-location-arrow"></i> ';
     this.$panel.html(prefix + this.currentCity().fullName);
 
@@ -82,14 +79,19 @@ Quizzity.prototype.newGame = function() {
 
     this.pointer = 0;
 
+    this.resetMapView();
     this.showCity();
 
     this.$dialog.hide();
-    this.$panel.slideDown(200);
+
+    this.$panel.show();
+    this.$panel.addClass('animated flipInY');
 };
 
 Quizzity.prototype.showPoints = function() {
     var score, avgdist, sorted, bestcity, highscore, text, strprevious;
+
+    this.$points.hide();
 
     this.$panel.slideUp(200);
 
@@ -142,7 +144,8 @@ Quizzity.prototype.showPoints = function() {
     $('#dialogContent').html(text);
     $('#dialogLabel').html('Try again!');
 
-    this.$dialog.fadeIn();
+    this.$dialog.show();
+    this.$dialog.addClass('animated zoomIn');
 };
 
 Quizzity.prototype.isGameActive = function() {
@@ -194,7 +197,7 @@ Quizzity.prototype.resetMapView = function() {
 };
 
 Quizzity.prototype.userClick = function(e) {
-    var time, city, points, dist, multiplier;
+    var time, city, points, dist, multiplier, animationClass, pointsHTML;
 
     if (!this.isGameActive()) {
         return;
@@ -211,7 +214,7 @@ Quizzity.prototype.userClick = function(e) {
     // Distance in kilometers
     dist = Math.round(city.guess.distanceTo(city.position) / 1000);
 
-    if (dist < 15) { // Consider this exact
+    if (dist < 20) { // Consider this exact
         points = 2000;
     } else if (dist < 1500) {
         points = 1500 - dist;
@@ -231,17 +234,34 @@ Quizzity.prototype.userClick = function(e) {
     points *= multiplier;
     points = Math.round(points);
 
-    // Show on screen
-    this.$points.html('<div class="points animated bounceOut" style="left: ' + e.containerPoint.x + 'px; top: ' + e.containerPoint.y + 'px">' + points.toString() + '</div>');
+    console.log(time);
+    console.log(multiplier);
+    console.log(points);
 
-    // TODO: remove element
+    // Show points on screen
+    animationClass = 'animated bounceIn';
+
+    this.$points.removeClass(animationClass).hide();
+
+    if (points > 2000) {
+        pointsHTML = '<i class="fa fa-diamond"></i> ' + points.toString();
+    } else {
+        pointsHTML = points.toString();
+    }
+
+    if (points > 0) {
+        this.$points
+            .html(pointsHTML)
+            .show()
+            .addClass(animationClass);
+    }
+
+    this.resetMapView();
 
     // Save for stats
     city.distance = dist;
     city.points = points;
     city.time = time;
-
-    this.resetMapView();
 
     this.pointer += 1;
     if (this.isGameActive()) {
@@ -253,7 +273,9 @@ Quizzity.prototype.userClick = function(e) {
         this.showCity();
     } else {
         // Game over!
-        this.showPoints();
+        _.delay(_.bind(function() {
+            this.showPoints();
+        }, this), 200);
     }
 
     return true;
