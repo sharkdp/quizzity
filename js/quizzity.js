@@ -62,18 +62,16 @@ Quizzity.prototype.showCity = function() {
 Quizzity.prototype.newGame = function() {
     this.removeMarkers();
 
-    // Select random cities and add information
+    // Select random cities
     this.cities = _(Quizzity.dbCities)
         .sample(Quizzity.citiesPerGame)
         .map(function(city) {
-            // Replace country code by country name
-            city.countryName = Quizzity.dbCountries[city.country];
-
-            city.fullName = decodeURIComponent(city.name) + ', ' +
-                            decodeURIComponent(city.countryName);
-
-            city.position = L.latLng(city.lat, city.lng);
-            return city;
+            var countryName = Quizzity.dbCountries[city.country];
+            return {
+                fullName: decodeURIComponent(city.name) + ', ' +
+                          decodeURIComponent(countryName),
+                position: L.latLng(city.lat, city.lng)
+            };
         }, this)
         .value();
 
@@ -85,7 +83,7 @@ Quizzity.prototype.newGame = function() {
     this.$dialog.hide();
 
     this.$panel.show();
-    this.$panel.addClass('animated flipInY');
+    this.$panel.startAnimation('flipInY');
 };
 
 Quizzity.prototype.showPoints = function() {
@@ -145,7 +143,7 @@ Quizzity.prototype.showPoints = function() {
     $('#dialogLabel').html('Try again!');
 
     this.$dialog.show();
-    this.$dialog.addClass('animated zoomIn');
+    this.$dialog.startAnimation('zoomIn');
 };
 
 Quizzity.prototype.isGameActive = function() {
@@ -197,7 +195,7 @@ Quizzity.prototype.resetMapView = function() {
 };
 
 Quizzity.prototype.userClick = function(e) {
-    var time, city, points, dist, multiplier, animationClass, pointsHTML;
+    var time, city, points, dist, multiplier, pointsHTML;
 
     if (!this.isGameActive()) {
         return;
@@ -214,7 +212,7 @@ Quizzity.prototype.userClick = function(e) {
     // Distance in kilometers
     dist = Math.round(city.guess.distanceTo(city.position) / 1000);
 
-    if (dist < 20) { // Consider this exact
+    if (dist < 30) { // Consider this exact
         points = 2000;
     } else if (dist < 1500) {
         points = 1500 - dist;
@@ -235,9 +233,7 @@ Quizzity.prototype.userClick = function(e) {
     points = Math.round(points);
 
     // Show points on screen
-    animationClass = 'animated bounceIn';
-
-    this.$points.removeClass(animationClass).hide();
+    this.$points.hide();
 
     if (points > 2000) {
         pointsHTML = '<i class="fa fa-diamond"></i> ' + points.toString();
@@ -249,7 +245,7 @@ Quizzity.prototype.userClick = function(e) {
         this.$points
             .html(pointsHTML)
             .show()
-            .addClass(animationClass);
+            .addClass("bounceIn");
     }
 
     // Save for stats
@@ -292,6 +288,20 @@ Quizzity.Icons = {
         markerColor: 'green'
     })
 };
+
+$.fn.extend({
+    startAnimation: function(animateClass) {
+        var classes = "animated " + animateClass;
+
+        // we use the hide/show in between to actually reset the CSS animation
+        this.removeClass(classes)
+            .hide()
+            .addClass(classes)
+            .show();
+
+        return this;
+    }
+});
 
 
 $(document).ready(function() {
