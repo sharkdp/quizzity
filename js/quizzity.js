@@ -17,9 +17,8 @@ Quizzity.prototype.initializeInterface = function() {
     });
 
     this.layer = L.tileLayer(
-        'map/tiles/{z}/{x}/{y}.png',
+        'tiles/{z}/{x}/{y}.png',
         {
-            // id: 'sharkdp.e01ecf2e',
             maxZoom: Quizzity.maxZoom,
             minZoom: Quizzity.minZoom,
             noWrap: true,

@@ -1,7 +1,7 @@
 geodata/*.txt
 bower_components
 css/quizzity.css
-map/tiles
+tiles
 map/python-mbtiles
 map/quizzity/natural-earth-data
 map/quizzity/.thumb.png

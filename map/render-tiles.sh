@@ -5,7 +5,7 @@ if [[ ! -e python-mbtiles ]]; then
 fi
 
 tilefile="quizzity.mbtiles"
-tiledir="tiles"
+tiledir="../tiles"
 
 rm -f "$tilefile"
 rm -r $tiledir
