@@ -80,6 +80,8 @@ Quizzity.prototype.newGame = function() {
     this.resetMapView();
     this.showCity();
 
+    $("#map").addClass("crosshair");
+
     this.$dialog.hide();
 
     this.$panel.show();
@@ -92,6 +94,8 @@ Quizzity.prototype.showPoints = function() {
     // Remove panel and current points from screen
     this.$points.delay(500).slideUp();
     this.$panel.slideUp(200);
+
+    $("#map").removeClass("crosshair");
 
     // Show all markers
     _.each(this.cities, function(city) {
