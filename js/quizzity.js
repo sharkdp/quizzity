@@ -171,25 +171,43 @@ Quizzity.prototype.removeMarkers = function() {
     }
 };
 
-Quizzity.prototype.showMarkers = function(city, drawLine) {
-    this.mapElements.push(
-        L.marker(city.position, {
-            icon: Quizzity.Icons.city,
-            clickable: false,
-            keyboard: false,
-            title: city.fullName
-        }).addTo(this.map)
-    );
+Quizzity.prototype.showMarkers = function(city, gameOver) {
+    var content,
+        cityMarker = L.marker(city.position, {
+        icon: Quizzity.Icons.city,
+        clickable: gameOver,
+        keyboard: false,
+        title: city.fullName,
+        zIndexOffset: 1000,
+        opacity: 0.9
+    }).addTo(this.map);
+
+    this.mapElements.push(cityMarker);
 
     this.mapElements.push(
         L.marker(city.guess, {
             icon: Quizzity.Icons.guess,
             clickable: false,
-            keyboard: false
+            keyboard: false,
+            zIndexOffset: -1000,
+            opacity: 0.9
         }).addTo(this.map)
     );
 
-    if (drawLine) {
+    if (gameOver) {
+        // Add popup with information
+        content = '<div class="cityPopup">';
+        content += '<b>' + city.fullName + '</b>';
+        content += '<table>';
+        content += '<tr><td>Distance:</td><td>' + city.distance.toString() + 'km</td></tr>';
+        content += '<tr><td>Time:</td><td>' + (Math.round(city.time / 100) / 10).toString() + 's</td></tr>';
+        content += '<tr><td>Points:</td><td>' + city.points.toString() + '</td></tr>';
+        content += '</table>';
+        content += '<a target="_blank" href="http://en.wikipedia.org/wiki/' + encodeURIComponent(city.fullName) + '"><i class="fa fa-external-link"></i> City information</a>';
+        content += '</div>';
+        cityMarker.bindPopup(content, {closeButton: false});
+
+        // Show geodesic between city and user guess
         this.mapElements.push(
             L.geodesic([[city.guess, city.position]], {
                 steps: 100,
@@ -212,7 +230,7 @@ Quizzity.prototype.userClick = function(e) {
     var time, city, points, dist, multiplier, pointsHTML;
 
     if (!this.isGameActive()) {
-        return;
+        return true;
     }
 
     time = (new Date().getTime()) - this.startTime;
