@@ -177,9 +177,7 @@ Quizzity.prototype.showMarkers = function(city, gameOver) {
         icon: Quizzity.Icons.city,
         clickable: gameOver,
         keyboard: false,
-        title: city.fullName,
-        zIndexOffset: 1000,
-        opacity: 0.9
+        title: city.fullName
     }).addTo(this.map);
 
     this.mapElements.push(cityMarker);
@@ -188,9 +186,7 @@ Quizzity.prototype.showMarkers = function(city, gameOver) {
         L.marker(city.guess, {
             icon: Quizzity.Icons.guess,
             clickable: false,
-            keyboard: false,
-            zIndexOffset: -1000,
-            opacity: 0.9
+            keyboard: false
         }).addTo(this.map)
     );
 

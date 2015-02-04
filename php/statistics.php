@@ -55,11 +55,22 @@ foreach ($games as $game) {
 <?php
 foreach ($games as $game) {
     $points = 0;
+    foreach ($game['guesses'] as $guess) {
+        $points += $guess->points;
+    }
+    if ($points < 10000) {
+        continue;
+    }
     print '<tr>';
     print '<td>'.$game['time'].'</td>';
     foreach ($game['guesses'] as $guess) {
-        print '<td>'.htmlentities($guess->fullName).'</td>';
-        $points += $guess->points;
+        print '<td>'.htmlentities($guess->fullName).'<br>';
+        if ($guess->time > 12000) {
+            $col = 'red';
+        } else {
+            $col = 'black';
+        }
+        print '<span style="color:'.$col.'">'.($guess->time / 1000).'s</span></td>';
     }
     print '<td>'.$points.'</td>';
     print '<tr>';
