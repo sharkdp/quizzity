@@ -81,7 +81,7 @@ Quizzity.prototype.newGame = function() {
     this.resetMapView();
     this.showCity();
 
-    $("#map").addClass("crosshair");
+    $('#map').addClass('crosshair');
 
     this.$dialog.hide();
 
@@ -98,7 +98,7 @@ Quizzity.prototype.showPoints = function() {
     this.$points.delay(500).slideUp();
     this.$panel.slideUp(200);
 
-    $("#map").removeClass("crosshair");
+    $('#map').removeClass('crosshair');
 
     // Show all markers
     _.each(this.cities, function(city) {
@@ -258,7 +258,7 @@ Quizzity.prototype.userClick = function(e) {
         this.$points
             .html(pointsHTML)
             .show()
-            .addClass("bounceIn");
+            .addClass('bounceIn'); // TODO: use startAnimation? check in firefox
     }
 
     // Save for stats
@@ -304,7 +304,7 @@ Quizzity.Icons = {
 
 $.fn.extend({
     startAnimation: function(animateClass) {
-        var classes = "animated " + animateClass;
+        var classes = 'animated ' + animateClass;
 
         // we use the hide/show in between to actually reset the CSS animation
         this.removeClass(classes)
