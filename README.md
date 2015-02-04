@@ -10,6 +10,7 @@ quizzity is a geographical quiz built on top of a Leaflet map. You have to guess
 * lodash - https://lodash.com
 * jquery - http://jquery.com
 * Leaflet.awesome-markers - https://github.com/lvoogdt/Leaflet.awesome-markers
+* Leaflet.Geodesic - https://github.com/henrythasler/Leaflet.Geodesic
 * font-awesome - http://fortawesome.github.io/Font-Awesome
 * Animate.css - https://github.com/daneden/animate.css
 

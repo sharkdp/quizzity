@@ -8,7 +8,7 @@
 
 var Quizzity = function() {
     this.cities = []; // cities to guess
-    this.markers = []; // map elements
+    this.mapElements = []; // map elements
 };
 
 Quizzity.prototype.initializeInterface = function() {
@@ -164,15 +164,15 @@ Quizzity.prototype.isGameActive = function() {
 };
 
 Quizzity.prototype.removeMarkers = function() {
-    if (!_.isUndefined(this.markers)) {
-        _.each(this.markers, function(m) {
+    if (!_.isUndefined(this.mapElements)) {
+        _.each(this.mapElements, function(m) {
             this.map.removeLayer(m);
         }, this);
     }
 };
 
 Quizzity.prototype.showMarkers = function(city, drawLine) {
-    this.markers.push(
+    this.mapElements.push(
         L.marker(city.position, {
             icon: Quizzity.Icons.city,
             clickable: false,
@@ -181,7 +181,7 @@ Quizzity.prototype.showMarkers = function(city, drawLine) {
         }).addTo(this.map)
     );
 
-    this.markers.push(
+    this.mapElements.push(
         L.marker(city.guess, {
             icon: Quizzity.Icons.guess,
             clickable: false,
@@ -190,8 +190,9 @@ Quizzity.prototype.showMarkers = function(city, drawLine) {
     );
 
     if (drawLine) {
-        this.markers.push(
-            L.polyline([city.guess, city.position], {
+        this.mapElements.push(
+            L.geodesic([[city.guess, city.position]], {
+                steps: 100,
                 color: 'black',
                 weight: 3,
                 opacity: 0.6,

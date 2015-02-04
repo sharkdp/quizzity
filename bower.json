@@ -17,6 +17,7 @@
     "lodash": "~3.0.0",
     "Leaflet.awesome-markers": "~2.0.2",
     "font-awesome": "~4.3.0",
-    "animate.css": "~3.2.0"
+    "animate.css": "~3.2.0",
+    "Leaflet.Geodesic": "henrythasler/Leaflet.Geodesic"
   }
 }
