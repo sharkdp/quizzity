@@ -246,8 +246,6 @@ Quizzity.prototype.userClick = function(e) {
     points = Math.round(points);
 
     // Show points on screen
-    this.$points.hide();
-
     if (points > 2000) {
         pointsHTML = '<i class="fa fa-diamond"></i> ' + points.toString();
     } else {
@@ -257,8 +255,7 @@ Quizzity.prototype.userClick = function(e) {
     if (points > 0) {
         this.$points
             .html(pointsHTML)
-            .show()
-            .addClass('bounceIn'); // TODO: use startAnimation? check in firefox
+            .startAnimation('bounceIn');
     }
 
     // Save for stats
