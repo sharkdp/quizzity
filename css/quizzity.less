@@ -212,3 +212,81 @@ html, body, #map {
         color: @water;
     }
 }
+
+// Mobile support
+.scaleDown(@fontSize) {
+    #dialog {
+        font-size: @fontSize;
+
+        h1 {
+            font-size: (1.8 * @fontSize);
+        }
+
+        button {
+            font-size: @fontSize;
+        }
+    }
+
+    #panel {
+        font-size: 1.3 * @fontSize;
+    }
+}
+
+@media (max-width: (@dialogWidth + 2 * @dialogPadding + 20px)),
+       (max-height: (@measuredDialogHeight + 60px)) {
+    .scaleDown(24px);
+
+    #dialog {
+        left: 0;
+        top: 0;
+        margin: 0;
+        width: 100%;
+
+        padding: 10px;
+        padding-bottom: 30px;
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        border-radius: 0;
+    }
+
+    #dialogContent {
+        max-width: 430px;
+        margin: 0 auto;
+    }
+
+    #panel {
+        left: 0;
+        top: 0;
+        margin: 0;
+        width: 100%;
+
+        border-radius: 0;
+    }
+
+    .fa-ul {
+        margin-left: 46px;
+    }
+
+    .leaflet-control-zoom {
+        display: none;
+    }
+
+    #github {
+        display: none;
+    }
+
+    #points {
+        top: 45px;
+    }
+}
+
+@media (max-width: 410px), (max-height: 340px) {
+    .scaleDown(18px)
+}
+
+@media (max-width: 330px), (max-height: 290px) {
+    .scaleDown(14px);
+}
