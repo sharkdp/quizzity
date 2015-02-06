@@ -172,12 +172,16 @@ Quizzity.prototype.removeMarkers = function() {
 };
 
 Quizzity.prototype.showMarkers = function(city, gameOver) {
-    var content,
-        cityMarker = L.marker(city.position, {
+    var offset, cityMarker, content;
+
+    offset = gameOver ? 45 : 0;
+
+    cityMarker = L.marker(city.position, {
         icon: Quizzity.Icons.city,
         clickable: gameOver,
         keyboard: false,
-        title: city.fullName
+        title: city.fullName,
+        zIndexOffset: offset
     }).addTo(this.map);
 
     this.mapElements.push(cityMarker);
@@ -186,7 +190,8 @@ Quizzity.prototype.showMarkers = function(city, gameOver) {
         L.marker(city.guess, {
             icon: Quizzity.Icons.guess,
             clickable: false,
-            keyboard: false
+            keyboard: false,
+            zIndexOffset: -offset
         }).addTo(this.map)
     );
 
