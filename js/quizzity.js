@@ -86,7 +86,7 @@ Quizzity.prototype.newGame = function() {
     this.$dialog.hide();
 
     this.$panel.show();
-    this.$panel.startAnimation('flipInY');
+    this.$panel.startAnimation('bounceIn');
 
     ga('send', 'event', 'button', 'click', 'start-game');
 };
