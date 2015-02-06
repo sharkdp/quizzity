@@ -3,7 +3,17 @@
 @water: #4576b2;
 
 @panelWidth: 500px;
+
+// measured height (including padding) in Chrome, for vertical centering
+@measuredDialogHeight: 344px;
 @dialogWidth: 500px;
+@dialogPadding: 20px;
+
+// margin for the objects on top of the map
+@pageMargin: 10px;
+
+// padding for top- and github panels
+@panelPadding: 3px;
 
 body {
     padding: 0;
@@ -23,16 +33,28 @@ html, body, #map {
     cursor: crosshair;
 }
 
-.roboto {
+// Helper mixins
+.roboto() {
     font-family: 'Roboto Condensed', sans-serif;
 }
 
-.centerHor(@width) {
-    left: 50%;
-    width: @width;
-    margin-left: -(0.5 * @width);
+.transparent() {
+    background-color: rgba(255, 255, 255, 0.85);
 }
 
+.centerHor(@width, @padding) {
+    left: 50%;
+    width: @width;
+    margin-left: -(0.5 * @width + @padding);
+}
+
+.centerVer(@height) {
+    top: 50%;
+    // we do not specify the height here... we measure it
+    margin-top: -(0.5 * @height);
+}
+
+// Mixin for top-panel, dialog and github-panel
 .box (@shadowRadius, @shadowAlpha) {
     position: absolute;
 
@@ -45,107 +67,107 @@ html, body, #map {
     border-radius: 5px;
     box-shadow: 0px 2px @shadowRadius rgba(0, 0, 0, @shadowAlpha);
 
+    // Pass pointer events to the underlying map
     pointer-events: none;
 }
 
+// Top panel, showing current city
 #panel {
     .box(5px, 0.3);
-    .centerHor(@panelWidth);
-    top: 10px;
+    .centerHor(@panelWidth, @panelPadding);
+    top: @pageMargin;
 
     background-color: #fff;
     text-align: center;
-    padding: 2px;
+    padding: @panelPadding;
     display: none;
 }
 
-.transparent {
-    background-color: rgba(255, 255, 255, 0.85);
-}
-
+// Main centered dialog
 #dialog {
     .box(20px, 0.9);
-    .centerHor(@dialogWidth);
-
-    top: 50%;
-    margin-top: -150px;
+    .centerHor(@dialogWidth, @dialogPadding);
+    .centerVer(@measuredDialogHeight);
 
     .transparent;
-    padding: 20px;
+    padding: @dialogPadding;
 
     display: none;
+
+    h1 {
+        font-weight: 700;
+        font-size: 40px;
+        text-align: center;
+
+        .zz {
+            color: @water;
+        }
+    }
+
+    li {
+        margin-bottom: 10px;
+    }
+
+    .buttons {
+        padding: 0;
+        margin: 0;
+        text-align: center;
+    }
+
+    button {
+        margin-top: 10px;
+
+        font-size: 24px;
+        font-weight: 700;
+
+        background-color: #444;
+        color: white;
+
+        padding: 7px;
+        padding-left: 15px;
+        padding-right: 15px;
+
+        border-radius: 3px;
+        border-width: 0;
+        border-bottom: 2px solid #333;
+
+        pointer-events: auto;
+    }
+
+    button:hover,
+    button:focus {
+        background-color: #666;
+        cursor: pointer;
+    }
+
+    button:active {
+        border-bottom: none;
+        border-top: 2px solid #333;
+    }
 }
 
-#dialog h1 {
-    font-weight: 700;
-    font-size: 40px;
-    text-align: center;
-}
-
-.zz {
-    color: @water;
-}
-
-#dialog li {
-    margin-bottom: 10px;
-}
-
-#dialog p {
-    padding: 0;
-    margin: 0;
-}
-
-#dialog button {
-    margin-top: 10px;
-
-    font-size: 24px;
-    font-weight: 700;
-
-    background-color: #444;
-    color: white;
-
-    padding: 7px;
-    padding-left: 15px;
-    padding-right: 15px;
-
-    border-radius: 3px;
-    border-width: 0;
-    border-bottom: 2px solid #333;
-
-    pointer-events: auto;
-}
-
-#dialog button:hover,
-#dialog button:focus {
-    background-color: #666;
-    cursor: pointer;
-}
-
-#dialog button:active {
-    border-bottom: none;
-    border-top: 2px solid #333;
-}
-
+// Source code panel
 #github {
     .box(3px, 0.9);
-    bottom: 10px;
-    left: 10px;
+    bottom: @pageMargin;
+    left: @pageMargin;
 
-    padding: 3px;
+    padding: @panelPadding;
     padding-left: 10px;
     padding-right: 10px;
 
     font-size: 20px;
 
     .transparent;
+
+    a {
+        text-decoration: none;
+        color: black;
+        pointer-events: auto;
+    }
 }
 
-#github a {
-    text-decoration: none;
-    color: black;
-    pointer-events: auto;
-}
-
+// flashing score during the game
 #points {
     position: absolute;
     top: 7px;
@@ -156,33 +178,37 @@ html, body, #map {
     font-size: 40px;
     color: #fff;
 
+    // 1px outline and transparent drop-shadow
     text-shadow:
          0px  1px 0px #000,
          0px -1px 0px #000,
         -1px  0px 0px #000,
          1px  0px 0px #000,
          0px  2px 2px rgba(0, 0, 0, 0.7);
+
+    pointer-events: none;
 }
 
+// Leaflet popups, showing city information
 .leaflet-popup-content {
     .roboto;
     font-weight: 400;
     font-size: 14px;
-}
 
-.leaflet-popup-content table {
-    margin: 0;
-    margin-top: 3px;
-    margin-bottom: 3px;
+    table {
+        margin: 0;
+        margin-top: 3px;
+        margin-bottom: 3px;
 
-    border-spacing: 0;
+        border-spacing: 0;
 
-    td {
-        padding: 0;
-        padding-right: 4px;
+        td {
+            padding: 0;
+            padding-right: 4px;
+        }
     }
-}
 
-.leaflet-popup-content a {
-    color: @water;
+    a {
+        color: @water;
+    }
 }
