@@ -276,6 +276,8 @@ Quizzity.prototype.userClick = function(e) {
         this.$points
             .html(pointsHTML)
             .startAnimation('bounceIn');
+    } else {
+        this.$points.hide();
     }
 
     // Save for stats
