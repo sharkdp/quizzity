@@ -2,7 +2,7 @@
 
 quizzity is a geographical quiz built on top of a Leaflet map. You have to guess the location of several cities on a map while receiving points for being both accurate and fast.
 
-[**Play the game here!**](http://david-peter.de/quizzity/)
+[**Play the game here!**](https://david-peter.de/quizzity/)
 
 ### Score distribution
 ![Score distribution](https://raw.githubusercontent.com/sharkdp/quizzity/master/statistics/histogram.png)
