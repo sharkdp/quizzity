@@ -1,4 +1,6 @@
 <?php
+/* ini_set('display_errors', 1); */
+
 function error($msg) {
     http_response_code(500);
     die($msg);
@@ -7,7 +9,7 @@ function error($msg) {
 $db = new PDO('sqlite:db/games.db');
 
 if (!$db) {
-    error("Database error");
+    error("Database error: could not open DB");
 }
 
 // parse input
@@ -49,7 +51,7 @@ if (!is_null($guesses) && count($guesses) == 6) {
 
         if (!$res) {
             $db->rollBack();
-            error("Database error");
+            error("Database error: could not execute query");
         }
     }
 
