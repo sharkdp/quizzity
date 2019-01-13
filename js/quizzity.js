@@ -46,6 +46,9 @@ Quizzity.minZoom = 2;
 // usually a bad idea: a germany-based worldview:
 Quizzity.mapCenter = L.latLng(50, 10);
 Quizzity.citiesPerGame = 6;
+Quizzity.topPanelHeight = 48;
+Quizzity.markerHeight = 45;
+Quizzity.resetForNextCityDelay = 2000;
 
 Quizzity.prototype.currentCity = function() {
     return this.cities[this.pointer];
@@ -287,7 +290,13 @@ Quizzity.prototype.userClick = function(e) {
 
     this.pointer += 1;
     if (this.isGameActive()) {
-        this.resetMapView();
+        // pan and zoom to focus both the guess and the answer
+        this.map.fitBounds([ city.position, city.guess ], { 'paddingTopLeft': [ 0, Quizzity.topPanelHeight + Quizzity.markerHeight ] });
+
+        // reset the map for the next city after a short delay
+        _.delay(_.bind(function() {
+            this.resetMapView();
+        }, this), Quizzity.resetForNextCityDelay);
 
         // Show guess and solution on the map
         this.removeMarkers();
