@@ -147,7 +147,7 @@ html, body, #map {
 }
 
 // Source code panel
-#github {
+#github, #paypal {
     .box(3px, 0.9);
     bottom: @pageMargin;
     left: @pageMargin;
@@ -165,6 +165,10 @@ html, body, #map {
         color: black;
         pointer-events: auto;
     }
+}
+
+#paypal {
+    bottom: @pageMargin + 40px;
 }
 
 // flashing score during the game
@@ -275,6 +279,10 @@ html, body, #map {
     }
 
     #github {
+        display: none;
+    }
+
+    #paypal {
         display: none;
     }
 
