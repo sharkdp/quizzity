@@ -3,7 +3,7 @@
   "version": "0.1",
   "homepage": "https://github.com/sharkdp/quizzity",
   "authors": [
-    "David Peter <davidpeter@web.de>"
+    "David Peter <mail@david-peter.de>"
   ],
   "description": "A worldmap quiz game built with Leaflet",
   "main": "js/main.js",
