@@ -65,7 +65,7 @@ Quizzity.prototype.newGame = function() {
 
     // Select random cities
     this.cities = _(Quizzity.dbCities)
-        .sample(Quizzity.citiesPerGame)
+        .sampleSize(Quizzity.citiesPerGame)
         .map(function(city) {
             var countryName = Quizzity.dbCountries[city.country];
             return {
@@ -73,7 +73,7 @@ Quizzity.prototype.newGame = function() {
                           decodeURIComponent(countryName),
                 position: L.latLng(city.lat, city.lng)
             };
-        }, this)
+        })
         .value();
 
     this.pointer = 0;
@@ -103,7 +103,7 @@ Quizzity.prototype.showPoints = function() {
     // Show all markers
     _.each(this.cities, function(city) {
         this.showMarkers(city, true);
-    }, this);
+    }.bind(this));
 
     // Score
     score = _.reduce(this.cities, function(sum, city) {
@@ -167,7 +167,7 @@ Quizzity.prototype.removeMarkers = function() {
     if (!_.isUndefined(this.mapElements)) {
         _.each(this.mapElements, function(m) {
             this.map.removeLayer(m);
-        }, this);
+        }.bind(this));
     }
 };
 
@@ -178,7 +178,7 @@ Quizzity.prototype.showMarkers = function(city, gameOver) {
 
     cityMarker = L.marker(city.position, {
         icon: Quizzity.Icons.city,
-        clickable: gameOver,
+        interactive: gameOver,
         keyboard: false,
         title: city.fullName,
         zIndexOffset: offset
@@ -189,7 +189,7 @@ Quizzity.prototype.showMarkers = function(city, gameOver) {
     this.mapElements.push(
         L.marker(city.guess, {
             icon: Quizzity.Icons.guess,
-            clickable: false,
+            interactive: false,
             keyboard: false,
             zIndexOffset: -offset
         }).addTo(this.map)
@@ -211,11 +211,11 @@ Quizzity.prototype.showMarkers = function(city, gameOver) {
         // Show geodesic between city and user guess
         this.mapElements.push(
             L.geodesic([[city.guess, city.position]], {
-                steps: 100,
+                steps: 7,
                 color: 'black',
                 weight: 3,
                 opacity: 0.6,
-                clickable: false
+                interactive: false
             }).addTo(this.map)
         );
     }
@@ -342,7 +342,7 @@ $(document).ready(function() {
     game.initializeInterface();
 
     // Load JSON data (countries and cities)
-    $.getJSON('geodata/countries.json').success(function(countries) {
+    $.getJSON('geodata/countries.json').done(function(countries) {
         Quizzity.dbCountries = countries;
 
         $.getJSON('geodata/cities-world.json', function(cities) {

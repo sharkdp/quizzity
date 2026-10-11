@@ -1,0 +1,21 @@
+{
+  "name": "quizzity",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "animate.css": "3.7.2",
+    "font-awesome": "4.7.0",
+    "jquery": "3.7.1",
+    "leaflet": "1.9.4",
+    "leaflet.awesome-markers": "2.0.5",
+    "leaflet.geodesic": "2.7.2",
+    "lodash": "4.18.1",
+    "select2": "4.1.0"
+  },
+  "devDependencies": {
+    "less": "4.9.1"
+  }
+}

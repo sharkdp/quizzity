@@ -33,7 +33,7 @@ Statistics.prototype.removeMarkers = function() {
     if (!_.isUndefined(this.mapElements)) {
         _.each(this.mapElements, function(m) {
             this.map.removeLayer(m);
-        }, this);
+        }.bind(this));
     }
 };
 
@@ -48,15 +48,15 @@ Statistics.prototype.show = function(city) {
             fillColor: '#000',
             fillOpacity: 0.2,
             keyboard: false,
-            clickable: false
+            interactive: false
         }).addTo(this.map);
 
         this.mapElements.push(m);
-    }, this);
+    }.bind(this));
 
     this.mapElements.push(
         L.circle(city.position, city.sigma * 1000, {
-            clickable: false,
+            interactive: false,
             color: '#090',
         }).addTo(this.map)
     );
@@ -97,7 +97,7 @@ $(document).ready(function() {
     s.initializeInterface();
 
     // Load JSON data (countries and cities)
-    $.getJSON('cities.json').success(function(cities) {
+    $.getJSON('cities.json').done(function(cities) {
         var $sel = $("#citySelect");
 
         Statistics.cities = cities;

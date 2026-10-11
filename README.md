@@ -40,10 +40,21 @@ python3 statistics/generate-statistics.py /path/to/games.db geodata statistics/c
 Review the resulting JSON before committing it. This is a manual maintenance
 operation, not part of serving the website.
 
-### Preserved browser assets
+### Build and preview
 
-`bower_components/` contains the historical browser libraries; `tiles/` contains
-the generated map tiles. Both are tracked so local use and deployment use the
-same assets without running Bower. Library revisions are recorded in
-`vendor-provenance.json`; `vendor-sha256.json` records the preserved asset hashes.
-Dependency licenses remain alongside their sources.
+```sh
+npm ci --ignore-scripts
+npm run build
+python3 -m http.server 8000 --directory dist
+```
+
+Open http://localhost:8000 for a static preview. PHP endpoints need a PHP-capable
+server and the environment configuration above; a static preview cannot log games.
+
+Browser libraries are installed from npm with exact versions and integrity hashes
+in `package-lock.json`, then copied to `dist/assets` with their licenses. CSS is
+compiled from LESS. No Bower installation or tracked library sources are needed.
+The build explicitly excludes the game database, private configuration and caches.
+
+The original unlabeled map tiles remain tracked in `tiles/`. Their preserved hashes
+are recorded in `tiles-sha256.json`. `map/` contains the historical rendering setup.
