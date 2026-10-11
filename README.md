@@ -39,3 +39,11 @@ python3 statistics/generate-statistics.py /path/to/games.db geodata statistics/c
 
 Review the resulting JSON before committing it. This is a manual maintenance
 operation, not part of serving the website.
+
+### Preserved browser assets
+
+`bower_components/` contains the historical browser libraries; `tiles/` contains
+the generated map tiles. Both are tracked so local use and deployment use the
+same assets without running Bower. Library revisions are recorded in
+`vendor-provenance.json`; `vendor-sha256.json` records the preserved asset hashes.
+Dependency licenses remain alongside their sources.

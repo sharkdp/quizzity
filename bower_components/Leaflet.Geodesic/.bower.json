@@ -1,0 +1,14 @@
+{
+  "name": "Leaflet.Geodesic",
+  "homepage": "https://github.com/henrythasler/Leaflet.Geodesic",
+  "_release": "2dbe39c094",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "2dbe39c094b1bc2e59a2cff4f24ecd242a688497"
+  },
+  "_source": "git://github.com/henrythasler/Leaflet.Geodesic.git",
+  "_target": "*",
+  "_originalSource": "henrythasler/Leaflet.Geodesic",
+  "_direct": true
+}
