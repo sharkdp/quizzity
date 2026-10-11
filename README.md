@@ -23,3 +23,19 @@ quizzity is a geographical quiz built on top of a Leaflet map. You have to guess
 * python-mbtiles - https://github.com/perrygeo/python-mbtiles
 
 The game idea is inspired by [Geosense](http://www.geosense.net/).
+
+### PHP backend and statistics
+
+Set `QUIZZITY_DB` to the absolute path of a writable SQLite database with the
+existing Quizzity schema. Keep the database outside the public document root;
+it is live data and must be backed up separately. Both PHP endpoints use this
+environment variable. No database or credentials belong in Git.
+
+To regenerate the checked-in map statistics from a database snapshot:
+
+```sh
+python3 statistics/generate-statistics.py /path/to/games.db geodata statistics/cities.json
+```
+
+Review the resulting JSON before committing it. This is a manual maintenance
+operation, not part of serving the website.

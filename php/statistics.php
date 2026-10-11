@@ -1,5 +1,5 @@
 <?php
-$db = new PDO('sqlite:db/games.db');
+$db = new PDO('sqlite:' . getenv('QUIZZITY_DB'));
 if (!$db) {
     die('Could not connect to database');
 }
@@ -18,7 +18,7 @@ $over_10000 = $s->fetchObject()->countHigh;
 ?>
 <table border="1">
     <tr><td>No. of games      </td><td><?=$count?></td></tr>
-    <tr><td>Average score     </td><td><?=round($total / $count)?></td></tr>
+    <tr><td>Average score     </td><td><?=round($total / max(1, $count))?></td></tr>
     <tr><td>Highscore         </td><td><?=$highscore?></td></tr>
-    <tr><td>Scores over 10000 </td><td><?=$over_10000?> (<?=round($over_10000 / $count * 100, 2)?>%)</td></tr>
+    <tr><td>Scores over 10000 </td><td><?=$over_10000?> (<?=round($over_10000 / max(1, $count) * 100, 2)?>%)</td></tr>
 </p>
